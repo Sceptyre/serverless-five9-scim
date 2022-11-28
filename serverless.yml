@@ -1,0 +1,12 @@
+service: serverless-five9-scim
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+
+functions:
+  catchAll:
+    handler: api/app.handler
+    events:
+      - httpApi: '*'
