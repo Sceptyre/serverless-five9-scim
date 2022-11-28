@@ -1,0 +1,34 @@
+name: "Build"
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "checkout"
+        uses: actions/checkout@v2
+
+      - name: "parse"
+        id: pkgjson
+        uses: jaywcjlove/github-action-package@main
+
+      - name: "install"
+        run: npm install
+
+      - name: "build"
+        run: npm run build
+
+      - name: "release"
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "v${{ steps.pkgjson.outputs.version }}"
+          prerelease: true
+          title: "Release v${{ steps.pkgjson.outputs.version }}"
+          files: |
+            .serverless/*
