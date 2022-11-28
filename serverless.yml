@@ -7,6 +7,12 @@ provider:
 
 functions:
   catchAll:
+    timeout: 60
+    memorySize: 128
     handler: api/app.handler
     events:
       - httpApi: '*'
+
+plugins:
+  - serverless-offline
+  - serverless-dotenv-plugin
