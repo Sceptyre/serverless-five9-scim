@@ -6,12 +6,23 @@ provider:
   runtime: nodejs14.x
 
 functions:
-  catchAll:
-    timeout: 60
+  user:
+    timeout: 30
     memorySize: 128
     handler: api/app.handler
     events:
-      - httpApi: '*'
+      - httpApi:
+          path: 'scimv2/Users/{id}'
+          method: 'ANY'
+
+  users:
+    timeout: 30
+    memorySize: 128
+    handler: api/app.handler
+    events:
+      - httpApi: 
+          path: 'scimv2/Users'
+          method: 'ANY'
 
 plugins:
   - serverless-offline
