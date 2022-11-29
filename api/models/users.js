@@ -4,6 +4,10 @@ Users Model
 EXPECTS INPUT TO BE IN SCIM SYNTAX AND WILL OUTPUT IN SCIM SYNTAX
 `
 
+const AWS = require('aws-sdk')
+const ddb = new AWS.DynamoDB.DocumentClient()
+
+
 const iF9VCC = require('../interfaces/f9vcc')
 const mapUser = require('../helpers/mappers/users')
 
@@ -11,6 +15,15 @@ const { parse, filter } = require('scim2-parse-filter');
 
 module.exports = {
     async getUserById(id) {
+        const { Item } = await ddb.get({
+            TableName: 'USERS',
+            Key: {
+                "id": Number(id)
+            }
+        }).promise()
+
+        console.log(Item)
+
         const vcc = await iF9VCC.getClient()
 
         let usersGeneralInfoListResponse = await vcc.getUsersGeneralInfoAsync('.*')

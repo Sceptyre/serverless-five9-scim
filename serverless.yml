@@ -4,6 +4,37 @@ frameworkVersion: '3'
 provider:
   name: aws
   runtime: nodejs14.x
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource:
+            - Fn::GetAtt: [ usersTable, Arn ]
+  environment:
+    USERS_TABLE: USERS
+
+resources:
+      Resources:
+        usersTable:
+          Type: AWS::DynamoDB::Table
+          Properties:
+            TableName: USERS
+            AttributeDefinitions:
+              - AttributeName: id
+                AttributeType: N
+            KeySchema:              
+              - AttributeName: id
+                KeyType: HASH
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
 
 functions:
   user:
@@ -12,7 +43,7 @@ functions:
     handler: api/app.handler
     events:
       - httpApi:
-          path: 'scimv2/Users/{id}'
+          path: '/scimv2/Users/{id}'
           method: 'ANY'
 
   users:
@@ -21,8 +52,14 @@ functions:
     handler: api/app.handler
     events:
       - httpApi: 
-          path: 'scimv2/Users'
+          path: '/scimv2/Users'
           method: 'ANY'
+
+  sync:
+    handler: api/sync.handler
+    events:
+      - schedule:
+          rate: rate(1 day)
 
 plugins:
   - serverless-offline
