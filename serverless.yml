@@ -38,7 +38,7 @@ resources:
 
 functions:
   user:
-    timeout: 30
+    timeout: 25
     memorySize: 128
     handler: api/app.handler
     events:
@@ -47,7 +47,7 @@ functions:
           method: 'ANY'
 
   users:
-    timeout: 30
+    timeout: 25
     memorySize: 128
     handler: api/app.handler
     events:
