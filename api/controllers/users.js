@@ -22,24 +22,24 @@ module.exports = {
             next(err)
         }
     },
-    async PUTUser(req, res) {
+    async PUTUser(req, res, next) {
         try {
-            await mUsers.updateUser(req.body)
+            await mUsers.updateUser(req.params.id, req.body)
                   
         } catch (err) {
             next(err)
         }
     },
-    async POSTUser(req, res) {
+    async POSTUser(req, res, next) {
         try {
             await mUsers.createUser(req.body)
         } catch (err) {
             next(err)
         }
     },
-    async DELETEUser(req, res) {
+    async DELETEUser(req, res, next) {
         try {
-            await mUsers.deleteUser(req.body)
+            await mUsers.deleteUser(req.params.id)
         } catch (err) {
             next(err)
         }

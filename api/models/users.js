@@ -80,16 +80,35 @@ module.exports = {
         return scimUserList
     },
     async deleteUser(id) {
-        await this.updateUser(
-            id,
-            { generalInfo: { active: false } }
-        )
+        const vcc = await iF9VCC.getClient()
+
+        let user = await this.getUserById(id)
+        let getUserResponse = await vcc.getUserInfoAsync({userName: user.userName})
+        let userData = getUserResponse[0].return
+
+        // Deactivate
+        userData.generalInfo.active = false
+
+        let modifyUserResponse = await vcc.modifyUserAsync({
+            userGeneralInfo: userData.generalInfo
+        })
+        let modifiedUser = mapUser.toScim(modifyUserResponse[0].return)
+
+        // update table entry
+        await ddb.update({
+            TableName: process.env.USERS_TABLE,
+            Item: modifiedUser,
+            Key: {
+                'id': modifiedUser.id
+            }
+        }).promise()
     },
     async updateUser(id, data) {
         const vcc = await iF9VCC.getClient()
 
         let user = await this.getUserById(id)
-        let oldUserData = await vcc.getUserInfoAsync({userName: user.userName})
+        let getUserResponse = await vcc.getUserInfoAsync({userName: user.userName})
+        let oldUserData = getUserResponse[0].return
 
         let newUserData = {
             ...oldUserData,
