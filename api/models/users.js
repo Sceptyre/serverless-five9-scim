@@ -6,15 +6,17 @@ EXPECTS INPUT TO BE IN SCIM SYNTAX AND WILL OUTPUT IN SCIM SYNTAX
 
 const AWS = require('aws-sdk')
 const ddb = new AWS.DynamoDB.DocumentClient()
-
+const logger = require('../helpers/logger')
+const ddbHelper = require('../helpers/ddb')
 
 const iF9VCC = require('../interfaces/f9vcc')
 const mapUser = require('../helpers/mappers/users')
-
-const { parse, filter } = require('scim2-parse-filter');
+const mapFilter = require('../helpers/mappers/filter')
 
 module.exports = {
     async getUserById(id) {
+        var userName
+        const vcc = await iF9VCC.getClient()
         const { Item } = await ddb.get({
             TableName: 'USERS',
             Key: {
@@ -22,23 +24,25 @@ module.exports = {
             }
         }).promise()
 
-        console.log(Item)
+        if(!Boolean(Item)) {
+            logger.warn(`User ID ${id} not found in Dynamo. Checking Five9...`)
 
-        const vcc = await iF9VCC.getClient()
+            let usersGeneralInfoListResponse = await vcc.getUsersGeneralInfoAsync('.*')
+            let usersGeneralInfoList = usersGeneralInfoListResponse[0].return
 
-        let usersGeneralInfoListResponse = await vcc.getUsersGeneralInfoAsync('.*')
-        let usersGeneralInfoList = usersGeneralInfoListResponse[0].return
+            userName = usersGeneralInfoList.find(
+                u => u.id == id
+            )?.userName
+        } else {
+            userName = Item.userName
+        }
 
-        let user = usersGeneralInfoList.find(
-            u => u.id == id
-        )
+        if(!userName) { throw new Error('User Not Found') }
 
-        if(!user) {throw new Error('User Not Found')}
-
-        let userInfoResponse = await vcc.getUserInfoAsync({userName: user.userName})
+        let userInfoResponse = await vcc.getUserInfoAsync( {userName: userName} )
         let userInfo = userInfoResponse[0].return
 
-        if(!userInfo) {throw new Error('Unable To Get User Info')}
+        if(!userInfo) { throw new Error('Unable To Get User Info') }
 
         return mapUser.toScim(userInfo)
     },
@@ -47,32 +51,30 @@ module.exports = {
 		count: 10,
 		filter: null
 	}) {        
-        const vcc = await iF9VCC.getClient()
-        var f;
+        let p = {}
 
         // Parse Filter String
         if (params.filter) {
-            let p = parse(params.filter)        
-            f = filter(p)
+            p = mapFilter.toAWS(params.filter)
         }
 
-        let usersInfoListResponse = await vcc.getUsersInfoAsync('.*')
-        let usersInfoList = usersInfoListResponse[0].return
+        console.log(JSON.stringify(p, 0, 4))
 
-        let resources = params.filter ? 
-            usersInfoList.map(mapUser.toScim).filter(f):
-            usersInfoList.map(mapUser.toScim)
+        const users = await ddbHelper.scanAll(
+            process.env.USERS_TABLE,
+            p
+        )
 
         // Build an empty UserList object
         let scimUserList = {
-            "Resources": resources.slice(
+            "Resources": users.slice(
                 params.startIndex - 1,
                 params.count + params.startIndex - 1
             ),
             "itemsPerPage": params.count,
             "schemas": ["urn:ietf:params:scim:api:messages:2.0:ListResponse"],
             "startIndex": params.startIndex,
-            "totalResults": resources.length
+            "totalResults": users.length
         }
 
         return scimUserList

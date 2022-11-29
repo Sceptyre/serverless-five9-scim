@@ -2,8 +2,12 @@ const AWS = require('aws-sdk')
 const ddb = new AWS.DynamoDB.DocumentClient()
 
 module.exports = {
-    async scanAll(table_name) {
-        let p = { TableName: table_name }
+    async scanAll(table_name, p={}) {
+        p = { 
+            TableName: table_name,
+            Limit: 10000,
+            ...p
+        }
 
         let data = await ddb.scan(p).promise()
         let scannedItems = data.Items
@@ -20,6 +24,11 @@ module.exports = {
         let p = { RequestItems:{} }
 
         let items = await this.scanAll(table_name)
+
+        if(items.length <= 0) {
+            return
+        }
+
         p.RequestItems[table_name] = items.map(
             i => {
                 return {
@@ -34,16 +43,11 @@ module.exports = {
     },
 
     async batchWrite(table_name, items) {
-        let p = { RequestItems:{} }
-
-        p.RequestItems[table_name] = items.map(i => {
-            return {
-                PutRequest: {
-                    Item: i
-                }
-            }
-        })
-
-        return await ddb.batchWrite(p).promise()
+        return await Promise.all(items.map(async (i) => {
+            return await ddb.put({
+                TableName: table_name,
+                Item: i
+            }).promise()
+        }))
     }
 }
