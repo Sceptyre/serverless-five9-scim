@@ -29,17 +29,14 @@ module.exports = {
             return
         }
 
-        p.RequestItems[table_name] = items.map(
-            i => {
-                return {
-                    DeleteRequest: {
-                        Key: i.id
-                    }
+        return await Promise.all(items.map(async (i) => {
+            return await ddb.delete({
+                TableName: table_name,
+                Key: {
+                    'id': i.id
                 }
-            }
-        )
-
-        return await ddb.batchWrite(p).promise()
+            }).promise()
+        }))
     },
 
     async batchWrite(table_name, items) {
