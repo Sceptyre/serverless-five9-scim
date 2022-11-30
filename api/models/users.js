@@ -148,19 +148,20 @@ module.exports = {
     
         let createdUser = mapUser.toScim(createUserResponse[0].return)
 
+
+        // Assign user to group
+        if (process.env.F9_NEW_USER_GROUP) {
+            await vcc.modifyAgentGroupAsync({
+                group: {name: process.env.F9_NEW_USER_GROUP},
+                addAgents: [ createdUser.userName ]
+            })
+        }
+
         // Add created user to user table
         await ddb.put({
             TableName: process.env.USERS_TABLE,
             Item: createdUser
         }).promise()
-
-        // Assign user to group
-        if (process.env.F9_NEW_USER_GROUP) {
-            await vcc.modifyAgentGroup({
-                agentGroup: process.env.F9_NEW_USER_GROUP,
-                addUsers: [ createdUser.userName ]
-            })
-        }
 
         return createdUser
     }
