@@ -1,9 +1,18 @@
 ## Usage
 
 ### Enviroment
-`F9_USERNAME`
-`F9_PASSWORD`
+`F9_USERNAME` - Five9 login  
+`F9_PASSWORD` - Five9 login  
+`F9_NEW_USER_GROUP` - Five9 group to place newly created users in  
+`SERVICE_TOKEN` - Bearer token to auth  
+- Note, when making requests, token should be converted to base64. ex.  
 
+```
+# SERVICE_TOKEN = abc123
+
+HTTP GET
+Authorization: Bearer YWJjMTIz
+```
 ### Deployment
 
 Install dependencies with:

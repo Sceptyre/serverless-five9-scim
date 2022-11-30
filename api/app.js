@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 const rRoot = require('./routers/root')
 const mwError = require('./middlewares/error')
 const mwLogger = require('./middlewares/logger')
+const mwAuth = require('./middlewares/auth')
 
 // init five9 soap interface
 const iF9VCC = require('./interfaces/f9vcc')
@@ -17,6 +18,9 @@ iF9VCC.initClient(
 // Apply json parser
 app.use(bodyParser.json({type:['application/json','application/scim+json','application/json+scim']}));
 app.use(bodyParser.raw());
+
+// Auth middleware
+app.use(mwAuth)
 
 // Logging middleware
 app.use(mwLogger)
