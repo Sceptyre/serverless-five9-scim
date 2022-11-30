@@ -1,5 +1,7 @@
 const vErrorResponse = require('../views/errorresponse')
+const logger = require('../helpers/logger')
 
 module.exports = async (err, req, res, next) => {
-    res.status(500).json(vErrorResponse(err.message))
+    logger.error(err.message)
+    res.status(500).json(vErrorResponse(500, err.message))
 }

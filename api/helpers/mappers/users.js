@@ -1,3 +1,4 @@
+const logger = require('../logger')
 const pwgen = require('../pwgen')
 
 module.exports = {
@@ -146,7 +147,7 @@ module.exports = {
                     .find(i => i.type == p[1]) // find permissions that matches current permission iteration
                     .value = true // Set true
             } catch {
-                throw Error(`Unable to map permission: ${perm}`)
+                logger.warn(`Unable to map permission: ${perm}`)
             }
         })
 

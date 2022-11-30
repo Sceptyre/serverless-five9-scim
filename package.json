@@ -1,12 +1,13 @@
 {
   "name": "serverless-five9-scim",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "scripts": {
     "build": "serverless package",
     "serve": "serverless offline"
   },
   "dependencies": {
+    "aws-sdk": "^2.1262.0",
     "express": "^4.17.1",
     "scim2-parse-filter": "^0.2.7",
     "serverless-http": "^2.7.0",
@@ -15,6 +16,7 @@
   },
   "devDependencies": {
     "serverless-dotenv-plugin": "^4.0.2",
+    "serverless-ignore": "^0.2.1",
     "serverless-offline": "^11.6.0"
   }
 }
