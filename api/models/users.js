@@ -154,6 +154,14 @@ module.exports = {
             Item: createdUser
         }).promise()
 
+        // Assign user to group
+        if (process.env.F9_NEW_USER_GROUP) {
+            await vcc.modifyAgentGroup({
+                agentGroup: process.env.F9_NEW_USER_GROUP,
+                addUsers: [ createdUser.userName ]
+            })
+        }
+
         return createdUser
     }
 }
