@@ -1,8 +1,10 @@
 ## Usage
 
 ### Enviroment
-`F9_USERNAME`
-`F9_PASSWORD`
+`F9_USERNAME`  
+`F9_PASSWORD`  
+`F9_NEW_USER_GROUP`  
+`SERVICE_TOKEN`
 
 ### Deployment
 
