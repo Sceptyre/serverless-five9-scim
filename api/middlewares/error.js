@@ -3,5 +3,5 @@ const logger = require('../helpers/logger')
 
 module.exports = async (err, req, res, next) => {
     logger.error(err.message)
-    res.status(500).json(vErrorResponse(err.message))
+    res.status(500).json(vErrorResponse(500, err.message))
 }
