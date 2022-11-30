@@ -18,7 +18,7 @@ module.exports = {
         var userName
         const vcc = await iF9VCC.getClient()
         const { Item } = await ddb.get({
-            TableName: 'USERS',
+            TableName: process.env.USERS_TABLE,
             Key: {
                 "id": Number(id)
             }

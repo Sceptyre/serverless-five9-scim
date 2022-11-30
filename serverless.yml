@@ -18,14 +18,14 @@ provider:
           Resource:
             - Fn::GetAtt: [ usersTable, Arn ]
   environment:
-    USERS_TABLE: USERS
+    USERS_TABLE: serverless-five9-scim-users
 
 resources:
       Resources:
         usersTable:
           Type: AWS::DynamoDB::Table
           Properties:
-            TableName: USERS
+            TableName: serverless-five9-scim-users
             AttributeDefinitions:
               - AttributeName: id
                 AttributeType: N

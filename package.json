@@ -4,7 +4,8 @@
   "description": "",
   "scripts": {
     "build": "serverless package",
-    "serve": "serverless offline"
+    "serve": "serverless offline",
+    "deploy": "serverless deploy && serverless invoke --function sync"
   },
   "dependencies": {
     "aws-sdk": "^2.1262.0",

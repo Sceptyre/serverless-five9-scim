@@ -2,8 +2,6 @@ const {initClient, getClient} = require('./interfaces/f9vcc')
 const mapUser = require('./helpers/mappers/users');
 const ddbHelper = require('./helpers/ddb')
 
-const TABLE_NAME = 'USERS'
-
 module.exports.handler = async (event, context, callback) => {
     initClient(
         process.env.F9_USERNAME,
@@ -15,10 +13,10 @@ module.exports.handler = async (event, context, callback) => {
     const usersInfoList = usersInfoResponse[0].return
 
     // Clear table
-    await ddbHelper.deleteAll( TABLE_NAME )
+    await ddbHelper.deleteAll( process.env.USERS_TABLE )
 
     // Write new data
-    await ddbHelper.batchWrite( TABLE_NAME, usersInfoList.map(mapUser.toScim) )
+    await ddbHelper.batchWrite( process.env.USERS_TABLE, usersInfoList.map(mapUser.toScim) )
 
     // for (u in usersInfoList.map(mapUser.toScim)) {
     //     try {

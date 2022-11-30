@@ -12,7 +12,7 @@ module.exports = {
     
     async getClient() {
         let c = await soap.createClientAsync(
-            `https://api.five9.com/wsadmin/v13/AdminWebService?wsdl&user=${_username}`,
+            `https://api.five9.com/wsadmin/v12/AdminWebService?wsdl&user=${_username}`,
             {stream: true}
         )
 
