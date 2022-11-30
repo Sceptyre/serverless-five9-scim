@@ -24,7 +24,8 @@ module.exports = {
     },
     async PUTUser(req, res, next) {
         try {
-            await mUsers.updateUser(req.params.id, req.body)
+            let u = await mUsers.updateUser(req.params.id, req.body)
+            res.status(200).json(u)
                   
         } catch (err) {
             next(err)
@@ -32,7 +33,8 @@ module.exports = {
     },
     async POSTUser(req, res, next) {
         try {
-            await mUsers.createUser(req.body)
+            let u = await mUsers.createUser(req.body)
+            res.status(201).json(u)
         } catch (err) {
             next(err)
         }
@@ -40,6 +42,7 @@ module.exports = {
     async DELETEUser(req, res, next) {
         try {
             await mUsers.deleteUser(req.params.id)
+            res.status(204).send()
         } catch (err) {
             next(err)
         }
