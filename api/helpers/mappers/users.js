@@ -109,7 +109,19 @@ module.exports = {
                     },
                     "reporting": {
                         "permissions": [
-                            
+                            { "type": "CanScheduleReportsViaFtp", "value": false },
+                            { "type": "CanAccessRecordingsColumn", "value": false },
+                            { "type": "NICEEnabled", "value": false },
+                            { "type": "CanViewStandardReports", "value": false },
+                            { "type": "CanViewCustomReports", "value": false },
+                            { "type": "CanViewScheduledReports", "value": false },
+                            { "type": "CanViewRecentReports", "value": false },
+                            { "type": "CanViewRelease7Reports", "value": false },
+                            { "type": "CanViewCannedReports", "value": false },
+                            { "type": "CanViewDashboards", "value": false },
+                            { "type": "CanViewAllSkills", "value": false },
+                            { "type": "CanViewAllGroups", "value": false },
+                            { "type": "CanViewSocialReports", "value": false }
                         ]
                     }
                 }
