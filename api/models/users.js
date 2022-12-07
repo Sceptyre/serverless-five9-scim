@@ -125,13 +125,13 @@ module.exports = {
         })
         let modifiedUser = mapUser.toScim(modifyUserResponse[0].return)
 
+        // Maintain original id
+        modifiedUser.id = id
+
         // update table entry
-        await ddb.update({
+        await ddb.put({
             TableName: process.env.USERS_TABLE,
-            Item: modifiedUser,
-            Key: {
-                'id': modifiedUser.id
-            }
+            Item: modifiedUser
         }).promise()
 
         return modifiedUser
