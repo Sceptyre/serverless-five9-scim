@@ -33,7 +33,7 @@ module.exports = {
             return await ddb.delete({
                 TableName: table_name,
                 Key: {
-                    'id': i.id
+                    'id': String(i.id)
                 }
             }).promise()
         }))
@@ -41,6 +41,8 @@ module.exports = {
 
     async batchWrite(table_name, items) {
         return await Promise.all(items.map(async (i) => {
+            i.id = String(i.id) //Need id to be a string type
+
             return await ddb.put({
                 TableName: table_name,
                 Item: i
