@@ -1,9 +1,14 @@
 service: serverless-five9-scim
 frameworkVersion: '3'
 
+custom:
+  USERS_TABLE: '${self:service}-${sls:stage}-users'
+
 provider:
   name: aws
+  deploymentMethod: direct
   runtime: nodejs14.x
+  stage: ${env:STAGE, 'dev'}
   iam:
     role:
       statements:
@@ -18,14 +23,14 @@ provider:
           Resource:
             - Fn::GetAtt: [ usersTable, Arn ]
   environment:
-    USERS_TABLE: serverless-five9-scim-users
+    USERS_TABLE: ${self:custom.USERS_TABLE}
 
 resources:
       Resources:
         usersTable:
           Type: AWS::DynamoDB::Table
           Properties:
-            TableName: serverless-five9-scim-users
+            TableName: ${self:custom.USERS_TABLE}
             AttributeDefinitions:
               - AttributeName: id
                 AttributeType: N
