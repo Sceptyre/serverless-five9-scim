@@ -149,8 +149,8 @@ module.exports = {
         let createdUser = mapUser.toScim(createUserResponse[0].return)
 
 
-        // Assign user to group
-        if (process.env.F9_NEW_USER_GROUP) {
+        // Assign user to group if user is an agent or supervisor
+        if (process.env.F9_NEW_USER_GROUP && (user.roles?.agent || user.roles?.supervisor)) {
             await vcc.modifyAgentGroupAsync({
                 group: {name: process.env.F9_NEW_USER_GROUP},
                 addAgents: [ createdUser.userName ]
