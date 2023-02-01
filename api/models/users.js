@@ -20,7 +20,7 @@ module.exports = {
         const { Item } = await ddb.get({
             TableName: process.env.USERS_TABLE,
             Key: {
-                "id": Number(id)
+                "id": String(id)
             }
         }).promise()
 
