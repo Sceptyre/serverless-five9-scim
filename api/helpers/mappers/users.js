@@ -196,7 +196,7 @@ module.exports = {
         
         scimUser.active = user.generalInfo.active
 
-        scimUser.id = user.generalInfo.id
+        scimUser.id = String(user.generalInfo.id)
 
         scimUser.name.givenName = user.generalInfo.firstName || ""
         scimUser.name.familyName = user.generalInfo.lastName || ""
