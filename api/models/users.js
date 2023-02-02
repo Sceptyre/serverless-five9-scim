@@ -147,6 +147,7 @@ module.exports = {
         })
     
         let createdUser = mapUser.toScim(createUserResponse[0].return)
+        createdUser.id = String(createdUser.id)
 
 
         // Assign user to group if user is an agent or supervisor
