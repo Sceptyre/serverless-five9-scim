@@ -132,8 +132,10 @@ module.exports = {
         user.generalInfo.active = scimUser.active
 
         user.generalInfo.fullName = scimUser.displayName
-        user.generalInfo.firstName = scimUser.name.givenName
-        user.generalInfo.lastName = scimUser.name.familyName
+        
+        // names in five9 have length limits
+        user.generalInfo.firstName = scimUser.name.givenName.substring(0,32)
+        user.generalInfo.lastName = scimUser.name.familyName.substring(0,32)
         user.generalInfo.userName = scimUser.userName
 
         user.generalInfo.federationId = scimUser.userName
